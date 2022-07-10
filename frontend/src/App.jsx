@@ -1,32 +1,61 @@
+import { useEffect } from "react";
 import { useState, useContext } from "react";
 import { BankContext } from "./context/BankContaxt";
+
+// const setEachAccount = (account, index) => {
+//   account[index].isDeposit = true
+//   account[index].isWithdraw = false
+//   return account
+// }
+
 const App = () => {
-  const { connectWallet, currentAccount, getListAccount, accounts, handleCreateAccount, createAccount } = useContext(BankContext);
+  const { connectWallet, currentAccount, getListAccount, accounts, handleCreateAccount, createAccount, setAccounts } = useContext(BankContext);
   
   const [ isCreateAccount, setIsCreateAccount ] = useState(false)
 
-  getListAccount()
- 
+  useEffect(() => {
+    getListAccount()
+  }, [])
+
+  useEffect(() => { console.log(accounts) }, [accounts, setAccounts])
+  
+  const handleDeposit = (index) => {
+    const updatedAccount = [...accounts]
+    updatedAccount[index].isDeposit = true
+    updatedAccount[index].isWithdraw = false
+    setAccounts(updatedAccount)
+  }
+
   const listAccount =  accounts.map((val) => {
- 
+    
     return (
-      <div className="rounded shadow-xl mt-10 h-60 w-full p-10 flex flex-col justify-between" key={val.id}>
+      <div className="rounded shadow-xl mt-10 h-60 w-full p-10" key={val.id}>
+        {!val.isDeposit && !val.isWithdraw && (
+          <div className="normal h-full flex flex-col justify-between">
         <div className="">
           <p> Account Name: {val.name} </p>
           <p> Balance : {val.balance}</p>
         </div>
-
         <div className="flex">
-          <button className="bg-slate-700 text-white font-bold py-2 px-4 basis-1/3">
+          <button className="bg-slate-700 text-white font-bold py-2 px-4 basis-1/3" onClick={() =>handleDeposit(val.id)}> 
             Deposit
           </button>
           <button className="bg-slate-600 text-white font-bold py-2 px-4 basis-1/3">
             Withdraw
           </button>
-          <button className="bg-slate-500 text-white font-bold py-2 px-4 basis-1/3">
+          <button className="bg-slate-500 text-white font-bold py-2 px-4 basis-1/3" >
             Transfer
           </button>
         </div>
+        </div>
+        )}
+        
+        { val.isDeposit && (
+          <>ถอน</>
+        )
+          
+        }
+        
       </div>
     )
   })
