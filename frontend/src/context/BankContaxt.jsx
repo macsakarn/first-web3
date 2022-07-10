@@ -35,6 +35,7 @@ export const BankProvider = ({ children }) => {
             const {name} = formCreateAccount
             const bankContract = getEthereumContract()
             await bankContract.createAccount(name)
+            setFormCreateAccount({name:''})
         }
     } catch (error) {
         console.log(err);
@@ -76,11 +77,12 @@ export const BankProvider = ({ children }) => {
     }
   };
 
+  //ข้อมูลบัญชีทั้งหมด
   const getListAccount = async () =>{
     try {
         let accounts = []
         if (!ethereum) return alert("Please install metamask");
-
+2
         const bankContract = getEthereumContract()
 
         const num = await bankContract.getAccountCount()
@@ -91,7 +93,9 @@ export const BankProvider = ({ children }) => {
                 accounts.push({
                     id: i,
                     name: account._name,
-                    balance: ethers.BigNumber.from(account._balance).toNumber()
+                    balance: ethers.BigNumber.from(account._balance).toNumber(),
+                    isDeposit: false,
+                    isWithdraw: false,
                 })
                
             }
@@ -109,7 +113,7 @@ export const BankProvider = ({ children }) => {
   }, []);
 
   return (
-    <BankContext.Provider value={{ connectWallet, currentAccount, getListAccount, accounts, handleCreateAccount, createAccount }}>
+    <BankContext.Provider value={{ connectWallet, currentAccount, getListAccount, accounts, handleCreateAccount, createAccount, setAccounts }}>
       {children}
     </BankContext.Provider>
   );
